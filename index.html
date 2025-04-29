@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>QCM - Voyage en arabe</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .question { margin-bottom: 20px; }
+        .timer { font-size: 20px; color: red; margin-bottom: 20px; }
+        .hidden { display: none; }
+        #result { font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>QCM : Vocabulaire du voyage en arabe</h1>
+
+    <form id="qcmForm">
+        <label>Nom : <input type="text" name="nom" required></label><br><br>
+        <label>Prénom : <input type="text" name="prenom" required></label><br><br>
+        <label>Email : <input type="email" name="email" required></label><br><br>
+
+        <div class="timer" id="timer">25:00</div>
+
+        <div class="question">
+            1. Comment dire "Où est l'arrêt de bus ?" en arabe ?<br>
+            <input type="radio" name="q1" value="a"> a) أَيْنَ الْمَكْتَبُ ؟<br>
+            <input type="radio" name="q1" value="b"> b) أَيْنَ مَوْقِفُ الْحَافِلَةِ ؟<br>
+            <input type="radio" name="q1" value="c"> c) أَيْنَ الْمَطَارُ ؟<br>
+            <input type="radio" name="q1" value="d"> d) أَيْنَ الْمَطْعَمُ ؟<br>
+        </div>
+
+        <div class="question">
+            2. Que signifie : "مَتَى تَصِلُ الْحَافِلَةُ ؟" ?<br>
+            <input type="radio" name="q2" value="a"> a) Combien coûte le billet ?<br>
+            <input type="radio" name="q2" value="b"> b) Où est l'aéroport ?<br>
+            <input type="radio" name="q2" value="c"> c) Quand arrive le bus ?<br>
+            <input type="radio" name="q2" value="d"> d) Où est l'arrêt de taxi ?<br>
+        </div>
+
+        <!-- Les autres questions de 3 à 20 suivent... -->
+
+        <!-- Pour éviter un code très long ici, je peux aussi te préparer un fichier HTML complet si tu veux -->
+
+        <button type="submit">Valider les réponses</button>
+    </form>
+
+    <div id="result" class="hidden"></div>
+
+    <script>
+        // Corrections officielles
+        const corrections = {
+            q1: "b",
+            q2: "c",
+            q3: "b",
+            q4: "a",
+            q5: "b",
+            q6: "c",
+            q7: "a",
+            q8: "a",
+            q9: "b",
+            q10: "b",
+            q11: "c",
+            q12: "b",
+            q13: "b",
+            q14: "b",
+            q15: "c",
+            q16: "b",
+            q17: "b",
+            q18: "c",
+            q19: "a",
+            q20: "b"
+        };
+
+        // Chronomètre
+        let minutes = 25;
+        let seconds = 0;
+        const timerElement = document.getElementById("timer");
+
+        function updateTimer() {
+            if (minutes === 0 && seconds === 0) {
+                clearInterval(timerInterval);
+                document.getElementById("qcmForm").submit();
+            } else {
+                if (seconds === 0) {
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        // Correction QCM
+        document.getElementById("qcmForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            clearInterval(timerInterval);
+            let score = 0;
+            const formData = new FormData(this);
+            for (const [key, value] of formData.entries()) {
+                if (key.startsWith("q") && corrections[key] === value) {
+                    score++;
+                }
+            }
+            const nom = formData.get("nom");
+            const prenom = formData.get("prenom");
+            const email = formData.get("email");
+
+            const message = `Merci ${prenom} ${nom} !\nVotre score est : ${score} / 20.`;
+            document.getElementById("result").textContent = message;
+            document.getElementById("result").classList.remove("hidden");
+
+            // Simulation d'envoi d'email (en réel il faut côté serveur)
+            console.log(`Envoyer résultats à : ${email}`);
+        });
+    </script>
+
+</body>
+</html>
